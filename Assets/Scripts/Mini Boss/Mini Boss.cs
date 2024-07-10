@@ -8,10 +8,12 @@ public class MiniBoss : MonoBehaviour
 {
     // unity stuff
     Rigidbody2D rb;
+    private Transform groundCheck;
+    private LayerMask groundLayer;
 
     // other scripts
-    private Chase chase;
     private BossAttack bossAttack;
+    private GroundCheck groundCheckScript;
 
 
     // variables
@@ -40,17 +42,18 @@ public class MiniBoss : MonoBehaviour
     {
         // get unity stuff
         rb = GetComponent<Rigidbody2D>();
+        groundCheck = this.transform.Find("GroundCheck");
+        groundLayer = LayerMask.GetMask("Ground");
 
         // get scripts
-        chase = FindObjectOfType<Chase>();
         bossAttack = FindObjectOfType<BossAttack>();
+        groundCheckScript = FindObjectOfType<GroundCheck>();
 
         // set variables
-        chase.setPlayer(player);
-        chase.setSpeed(speed);
         bossAttack.setDashSpeed(dashSpeed);
-        bossAttack.setJumpingPower(jumpingPower);
         bossAttack.setSlashes(slashes);
+        groundCheckScript.setGroundCheck(groundCheck);
+        groundCheckScript.setGroundLayer(groundLayer);
     }
 
     // Update is called once per frame
@@ -59,14 +62,13 @@ public class MiniBoss : MonoBehaviour
         // set dynamic variables
         distance = Vector2.Distance(transform.position, player.transform.position); // count distance
         direction = player.transform.position - transform.position; // check direction
+
         bossAttack.setDistance(distance);
-        if (!bossAttack.isChanneling() && !bossAttack.isMoving() && !bossAttack.isAttacking()) // set attack target position before attacking
+        if (!bossAttack.isChanneling() && !bossAttack.isMoving() && !bossAttack.isAttacking() && groundCheckScript.isGrounded()) // set attack target position before attacking
             bossAttack.setTargetposition(new Vector3(player.transform.position.x, transform.position.y, transform.position.z));
         bossAttack.setIsFacingRight(isFacingRight);
 
         handleFlip();
-
-        // chase.handleChase(); // chase player
     }
 
 

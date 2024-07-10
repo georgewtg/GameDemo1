@@ -9,7 +9,7 @@ public class BossManager : MonoBehaviour
 
     private bool isCutscene = false;
     [SerializeField] private int cutsceneFrame;
-    [SerializeField] private int cutsceneFrameCounter = 0;
+    private int cutsceneFrameCounter = 0;
 
 
     // Update is called once per frame
